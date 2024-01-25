@@ -24,19 +24,12 @@ const login = async (req, res) => {
 };
 
 const dashboard = async (req, res) => {
-    
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        console.log(decoded);
-
-        const myLuckyNumber = Math.floor(Math.random() * 100);
-        res.status(200).json({
-            msg: `Hello, ${decoded.username}`,
-            secret: `Your lucky number is ${myLuckyNumber}`,
-        });
-    } catch (err) {
-        throw new CustomError('Not authorized to access this route', 401);
-    }
+    console.log(req.user);
+    const myLuckyNumber = Math.floor(Math.random() * 100);
+    return res.status(200).json({
+        msg: `Hello, ${req.user.username}`,
+        secret: `Your lucky number is ${myLuckyNumber}`,
+    });
 };
 
 module.exports = {

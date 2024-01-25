@@ -6,8 +6,17 @@ const authenticationMiddleware = async (req, res, next) => {
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
         throw new CustomError('No token found', 401);
     }
-    //token verification
     const token = authHeader.split(' ')[1];
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const { id, username } = decoded;
+        req.user = { id, username };
+        return next();
+    } catch (err) {
+        throw new CustomError('Not authorized to access this route', 401);
+    }
+
     next();
 };
 
